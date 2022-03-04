@@ -8,18 +8,21 @@
           </li>
           <br>
       </ul>
-      <input type="text" v-model="value" placeholder="请输入">
+      <input type="text" v-model="inputValue" placeholder="请输入">
       <button @click="addToParent">增加到父级</button>
       <div>
          <div> key1:{{props.key1}}</div>
          <div> value2:{{props.value2}}</div>
       </div>
       <button @click="changeVModel">修改vmodel值到父级</button>
+      <div>
+          我是provide传递过来的 ------{{childTitleProvide}}
+      </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-    import {defineProps,ref,defineEmits } from 'vue'
+    import {defineProps,ref,defineEmits ,inject,defineExpose} from 'vue'
     // 接受参数
     let props =  defineProps({
         list:{
@@ -38,17 +41,30 @@
     console.log(props);
     // 属性添加到父级
     let emits =defineEmits(['add','update:key1','update:value2'])
-    let value = ref('')
+    let inputValue = ref('')
 
     function addToParent(){
-        emits('add',value.value)
-        value.value = ''
+        emits('add',inputValue.value)
+        inputValue.value = ''
     }
 
     function changeVModel(){
         emits("update:key1", "新的key1")
         emits("update:value2", "新的value")
     }
+    
+    // 注入方法
+    let childTitleProvide = inject('titleProvide')
+    childTitleProvide ='子可以修改父级传递过来的值,但是使用shallow'
+    let method = ()=>{
+        
+    }
+    console.log(childTitleProvide);
+    // 把子属性抛错
+    defineExpose({
+        inputValue,
+        exposeMethod:method
+    })
     
 </script>
 

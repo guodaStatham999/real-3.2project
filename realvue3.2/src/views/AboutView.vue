@@ -1,20 +1,31 @@
 <template>
   <div class="about">
     <h1>This is an new generatation</h1>
-    my name is {{info.name}}<br>
-    my age is {{info.age}}
+    <button @click="toggleTabl">切换为表格</button>
+
   </div>
+
+  <aboutChildTable v-if='isShowTable' ></aboutChildTable>
+  <AboutChild v-else ref='childRef' v-model:key1="key1"  v-model:value2="value2" :list='list' @add='addList' ></AboutChild>
+  <div v-if='!isShowTable'>
+          my name is {{info.name}}<br>
+    my age is {{info.age}}
   <button @click="toChi('AboutViewChi')">to router child</button>
-  <AboutChild v-model:key1="key1"  v-model:value2="value2" :list='list' @add='addList' ></AboutChild>
+  </div>
   <router-view></router-view>
 </template>
 
 
 <script lang="ts" setup>
-import { reactive, ref,computed,watch } from 'vue';
+import { reactive, ref,computed,watch,provide, shallowRef } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 import { useRouter  } from 'vue-router';
 import AboutChild from '../components/AboutComponentChild'
+import aboutChildTable from '../components/aboutChildTable'
+let isShowTable = ref(false)
+let toggleTabl = ()=>{
+  isShowTable.value = !isShowTable.value
+}
 
 let router = useRouter()
 let info = reactive({
@@ -68,4 +79,21 @@ let list = ref([
     
   }
 
+// 获取元素
+let childRef = ref(null)
+// setTimeout(()=>{
+//   console.log(childRef,'childRef');
+//   console.log(childRef.value.inputValue,'inputValue');
+//   console.log(childRef.value.exposeMethod,'exposeMethod');
+  
+// },1000)
+
+// provide传参方式
+let titleProvide = shallowRef('aaa')
+provide('titleProvide',titleProvide)
+setTimeout(()=>{
+  console.log(titleProvide,'000000');
+  
+  titleProvide.value ='我是provide的值'
+},2000)
 </script>
